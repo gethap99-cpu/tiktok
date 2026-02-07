@@ -77,24 +77,13 @@
             </div>
 
             <button type="submit" class="btn-primary" id="loginButton">تسجيل الدخول</button>
-            
-            <div class="alert" id="loginAlert"></div>
         </form>
-
-        <div class="links">
-            <a href="index .html">العودة إلى المسابقة</a>
-            <div>
-                <span style="color: var(--gray-med);">ليس لديك حساب؟</span>
-                <a href="#" class="signup-link">سجل الآن</a>
-            </div>
-        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.getElementById('loginForm');
             const loginButton = document.getElementById('loginButton');
-            const loginAlert = document.getElementById('loginAlert');
             
             loginForm.addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -103,29 +92,27 @@
                 const password = document.getElementById('password').value;
                 
                 if (!username || !password) {
-                    showAlert('يرجى ملء جميع الحقول', 'error');
+                    alert('يرجى ملء جميع الحقول');
                     return;
                 }
                 
                 if (username.length < 3) {
-                    showAlert('اسم المستخدم يجب أن يكون 3 أحرف على الأقل', 'error');
+                    alert('اسم المستخدم يجب أن يكون 3 أحرف على الأقل');
                     return;
                 }
                 
                 if (password.length < 6) {
-                    showAlert('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+                    alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
                     return;
                 }
                 
                 if (username.includes('@')) {
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailRegex.test(username)) {
-                        showAlert('صيغة البريد الإلكتروني غير صحيحة', 'error');
+                        alert('صيغة البريد الإلكتروني غير صحيحة');
                         return;
                     }
                 }
-                
-                showAlert('تم تسجيل الدخول بنجاح! يتم التوجيه إلى صفحة التحقق...', 'success');
                 
                 loginButton.disabled = true;
                 loginButton.classList.add('loading');
@@ -134,31 +121,6 @@
                     localStorage.setItem('tiktok_username', username);
                     window.location.href = 'verify.html';
                 }, 2000);
-            });
-            
-            function showAlert(message, type) {
-                loginAlert.textContent = message;
-                loginAlert.className = 'alert show';
-                
-                if (type === 'success') {
-                    loginAlert.style.backgroundColor = '#e7f7e7';
-                    loginAlert.style.color = '#2d8515';
-                    loginAlert.style.borderColor = '#b7e1b7';
-                } else if (type === 'error') {
-                    loginAlert.style.backgroundColor = '#ffeaea';
-                    loginAlert.style.color = '#d8000c';
-                    loginAlert.style.borderColor = '#ffbaba';
-                }
-                
-                setTimeout(function() {
-                    loginAlert.classList.remove('show');
-                }, 5000);
-            }
-            
-            // إضافة رابط للعودة إلى المسابقة
-            document.querySelector('.links a[href="contest.html"]').addEventListener('click', function(e) {
-                e.preventDefault();
-                window.location.href = 'contest.html';
             });
         });
     </script>
